@@ -1,0 +1,61 @@
+TITLE "div_by_n Frequency Divider Module"; 
+-- Version 1.0, April 4th 1997
+-- Copyright Rune Baeverrud
+-- You may use or distribute this LPM function freely,
+-- provided you do not remove this copyright notice.
+-- If you have questions or comments, feel free to
+-- contact me by email at r@acte.no 
+-- World Wide WEB: http://www.acte.no/freecore
+
+PARAMETERS
+(
+  DIVISOR = 3
+);
+
+SUBDESIGN div_by_n
+(
+  SysClk    : INPUT;
+  Enable    : INPUT;
+  Every_n   : OUTPUT;
+)
+
+VARIABLE
+  IF (DIVISOR > 1) GENERATE
+    Counter[CEIL(LOG2(DIVISOR))-1..0]: DFFE; 
+  END GENERATE;
+  Deglitch: DFF;
+  Count_is_0 : NODE;
+
+BEGIN
+  ASSERT (DIVISOR > 1)
+	REPORT "Value of DIVISOR parameter (%) must be equal to or greater than 2"
+      DIVISOR
+	SEVERITY ERROR;
+
+  Counter[].clk = SysClk;
+  Counter[].ena = Enable;
+
+  IF (Counter[] == 0) THEN
+    FOR each_bit IN 0 TO (CEIL(LOG2(DIVISOR))-1) GENERATE
+   	  IF ((2^each_bit & (DIVISOR-1)) == 0) GENERATE
+        Counter[each_bit] = GND;
+	    ELSE GENERATE
+        Counter[each_bit] = VCC;
+	    END GENERATE;
+  	END GENERATE;
+    Count_is_0 = VCC;
+  ELSE
+    IF (DIVISOR > 2) GENERATE
+      Counter[] = Counter[] - 1;
+    ELSE GENERATE
+      Counter[0] = NOT Counter[0];
+    END GENERATE;
+  END IF;
+
+  Deglitch = Count_is_0 AND Enable;
+  Deglitch.clk = SysClk;
+  Every_n = Deglitch;
+END;
+
+
+
