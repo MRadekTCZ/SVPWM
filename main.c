@@ -133,7 +133,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	U_dc = 540; //Napiecie DC, normalnie by³oby mierzone na uk³adzie posredniczaczym pomiedzy zaciskami kondensatora
+	U_dc = 540; //Napiecie DC, normalnie byÂ³oby mierzone na ukÂ³adzie posredniczaczym pomiedzy zaciskami kondensatora
 
 	TState16bit.GpioState.rest = 0;
 	T_LastState16bit.GpioState.rest = 0;
@@ -359,7 +359,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					{
 						Ramp.set_ramp_freqency = MRB_ASCII_TO_NUMBER((cntrl&0x0000FF00)>>8)*10+MRB_ASCII_TO_NUMBER((cntrl&0x00FF0000)>>16)+MRB_ASCII_TO_NUMBER((cntrl&0xFF000000)>>24)*0.1;
 
-						//Te czesc projektu mozna by rozszerzyc o konwerter string -> int
+						
 						HAL_UART_Transmit_IT(&huart2, "\nfreq ok", strlen("\nfreq ok")); //command set freq ok
 						ErrorCode = NoError;
 					}
@@ -385,7 +385,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 					{
 						Ramp.ramp_time = MRB_ASCII_TO_NUMBER((cntrl&0x0000FF00)>>8)*10+MRB_ASCII_TO_NUMBER((cntrl&0x00FF0000)>>16)+MRB_ASCII_TO_NUMBER((cntrl&0xFF000000)>>24)*0.1;
 
-						//Te czesc projektu mozna by rozszerzyc o konwerter string -> int
+						
 						HAL_UART_Transmit_IT(&huart2, "\ntime ok", strlen("\ntime ok")); //command set freq ok
 						ErrorCode = NoError;
 					}
@@ -415,7 +415,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 				{
 					frequency = MRB_ASCII_TO_NUMBER((cntrl&0x0000FF00)>>8)*10+MRB_ASCII_TO_NUMBER((cntrl&0x00FF0000)>>16)+MRB_ASCII_TO_NUMBER((cntrl&0xFF000000)>>24)*0.1;
 
-					//Te czesc projektu mozna by rozszerzyc o konwerter string -> int
+					
 					HAL_UART_Transmit_IT(&huart2, "\nfreq ok", strlen("\nfreq ok")); //command set freq ok
 					ErrorCode = NoError;
 				}
@@ -460,7 +460,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 		Magnitude = frequency*0.02*330;
-		//transformacja Clarka
+		//Clark transform
 		time = time + Timp;
 
 		u_alfa = Magnitude*sin(2*PI*frequency*time);
@@ -543,7 +543,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	{
 		if ( (VSI_state == on) && frequency > 0.5)
 		{
-		//Obliczanie aktualnego optymalnego wektora zerowego - aby prze³¹czaæ jak najmniej tranzystorów
+		//determination of optimal zero vector -> reducing thyristor switching
 		if ((T1+T2+T3)== 2)
 		{
 		OUT0[0]=1;
